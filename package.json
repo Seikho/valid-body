@@ -17,7 +17,7 @@
     "middleware",
     "validate"
   ],
-  "author": "",
+  "author": "Carl Winkler",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/seikho/valid-body/issues"
