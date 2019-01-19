@@ -1,5 +1,6 @@
 import { expect } from 'chai'
-import { create, isString, ValidatorMiddleware } from '.'
+import { create, ValidatorMiddleware, wrap } from '.'
+import { isString } from './helpers'
 
 interface Test {
   it: string
@@ -16,10 +17,41 @@ const tests: Test[] = [
     error: true
   },
   {
-    it: 'call next with error',
+    it: 'pass validation',
     body: { name: 'name' },
     validator: create({ name: isString }),
     error: false
+  },
+  {
+    it: 'pass validation with wrapper',
+    body: { name: 'name' },
+    validator: create({
+      name: wrap(isString, { minLength: 2 })
+    }),
+    error: false
+  },
+  {
+    it: 'fail validation with wrapper',
+    body: { name: 'name' },
+    validator: create({
+      name: wrap(isString, { minLength: 5 })
+    }),
+    error: true
+  },
+  {
+    it: 'pass due to optional constraint',
+    body: {},
+    validator: create({
+      name: wrap(isString, { optional: true })
+    })
+  },
+  {
+    it: 'fail due to optional constraint',
+    body: {},
+    validator: create({
+      name: wrap(isString, { optional: false })
+    }),
+    error: true
   }
 ]
 

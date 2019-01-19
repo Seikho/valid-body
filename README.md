@@ -34,13 +34,13 @@ interface Body {
   }
 }
 
-const validator = valid.create<Body>({
+const validator = valid.create({
   name: valid.isString,
   age: valid.isNumber,
-  status: value => valid.isString(value, { allowed: ['enabled', 'disabled'] }),
-  description: value => valid.isString(value, { optional: true }),
+  status: valid.wrap(valid.isString, { allowed: ['enabled', 'disabled'] }),
+  description: valid.wrap(valid.isString, { optional: true }),
   meta: {
-    favouriteAnimal: value => valid.isString(value, { optional: true })
+    favouriteAnimal: valid.wrap(valid.isString, { optional: true })
   }
 })
 

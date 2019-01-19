@@ -3,15 +3,16 @@ import { OPTIONAL } from './helpers'
 
 export function validateObject<TBody extends {}>(
   validator: Validator,
-  obj: TBody,
+  input: TBody,
   pre = ''
 ): { errors: string[]; result: unknown } {
-  const keys = Object.keys(obj) as Array<keyof typeof obj>
+  const keys = Object.keys(validator) as Array<keyof typeof input>
   const errors: string[] = []
   const result: any = {}
+  const body = (input || {}) as TBody
 
   for (const key of keys) {
-    const value = obj[key]
+    const value = body[key]
 
     // TODO: Make this optional via create() options
     const validFn = validator[key as string]
@@ -21,8 +22,9 @@ export function validateObject<TBody extends {}>(
     }
 
     const isValidatorNested = Object.keys(validFn as any).length > 0
-    const isObjectNested = Object.keys(value).length > 0
-    if (isValidatorNested && isObjectNested) {
+    const isValueNested =
+      value === undefined ? false : Object.keys(value).length > 0
+    if (isValidatorNested && isValueNested) {
       const inPre = pre ? `${key}.${pre}` : `${key}.`
       const { errors: subErrors, result: subResult } = validateObject(
         validFn as Validator,

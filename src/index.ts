@@ -1,5 +1,10 @@
-import { Request, Response, NextFunction } from 'express'
-import { Validator } from './types'
+import {
+  Validator,
+  ValidatorMiddleware,
+  TypeValidator,
+  ValidatorOption,
+  ValueValidator
+} from './types'
 import { validateObject } from './validate'
 
 export * from './types'
@@ -11,14 +16,18 @@ export class StatusError extends Error {
   }
 }
 
-export type ValidatorMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => void
-
 export interface CreateOptions {
   query?: boolean
+}
+
+export function wrap<TValidator extends TypeValidator>(
+  valid: TValidator,
+  opts: ValidatorOption<TValidator>
+): ValueValidator {
+  // TODO: Why isn't 'valid' inferred as a function?
+  return (value: any) => {
+    return (valid as any)(value, opts)
+  }
 }
 
 export function create(
