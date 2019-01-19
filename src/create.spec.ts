@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { create, isString, ValidatorMiddleware } from '../src'
+import { create, isString, ValidatorMiddleware } from '.'
 
 interface Test {
   it: string

@@ -1,12 +1,12 @@
 {
   "name": "valid-body",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Express middleware generator for validating requests",
-  "main": "output/src/index.js",
+  "main": "output/index.js",
   "scripts": {
     "build": "tsc",
     "clean": "rimraf output/",
-    "test": "mocha 'output/tests/**/*.spec.js'"
+    "test": "mocha 'output/**/*.spec.js'"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,10 @@
   "bugs": {
     "url": "https://github.com/seikho/valid-body/issues"
   },
+  "files": [
+    "output/**/*.js",
+    "output/**/*.d.ts"
+  ],
   "homepage": "https://github.com/seikho/valid-body#readme",
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -32,5 +36,6 @@
     "mocha": "^5.2.0",
     "rimraf": "^2.6.3",
     "typescript": "^3.2.4"
-  }
+  },
+  "types": "output/index.d.ts"
 }

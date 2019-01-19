@@ -1,4 +1,4 @@
-import { isString, StringOptions, OPTIONAL } from '../src'
+import { isString, StringOptions, OPTIONAL } from '..'
 import { expect } from 'chai'
 
 interface Test {

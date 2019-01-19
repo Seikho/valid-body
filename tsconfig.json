@@ -7,6 +7,7 @@
     "noUnusedParameters": true,
     "noImplicitAny": true,
     "inlineSourceMap": true,
-    "outDir": "output"
+    "outDir": "output",
+    "declaration": true
   }
 }
