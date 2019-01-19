@@ -1,6 +1,6 @@
 {
   "name": "valid-body",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Express middleware generator for validating requests",
   "main": "output/index.js",
   "scripts": {
