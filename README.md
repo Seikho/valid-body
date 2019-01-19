@@ -64,12 +64,20 @@ router.post('/create', create.validator, create.handler)
 
 ### create
 
+The middleware will use `request.body` by default.
+
+This can be overriden by passing in `{ query: true }` as options to the create function.
+
 ```ts
 type ValueValidator<TValue = unknown> = (value: TValue) => undefined
 
 type Validator = { [key: string]: ValueValidator | Validator }
 
-function create(validator: Validator): RequestHandler
+interface CreateOptions {
+  query?: boolean
+}
+
+function create(validator: Validator, opts?: CreateOptions): RequestHandler
 ```
 
 ### isString

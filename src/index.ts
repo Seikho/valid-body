@@ -17,9 +17,17 @@ export type ValidatorMiddleware = (
   next: NextFunction
 ) => void
 
-export function create(validator: Validator): ValidatorMiddleware {
+export interface CreateOptions {
+  query?: boolean
+}
+
+export function create(
+  validator: Validator,
+  opts: CreateOptions = {}
+): ValidatorMiddleware {
   const mw: ValidatorMiddleware = (req, _res, next) => {
-    const body = req.body
+    const prop = getRequestProp(opts)
+    const body = req[prop]
     if (!body) {
       return next(new StatusError('No body received', 400))
     }
@@ -32,9 +40,18 @@ export function create(validator: Validator): ValidatorMiddleware {
       )
     }
 
-    req.body = result
+    req[prop] = result
     next()
   }
 
   return mw
+}
+
+function getRequestProp(opts: CreateOptions): 'body' | 'query' {
+  const useQuery = opts.query
+  if (useQuery) {
+    return 'query'
+  }
+
+  return 'body'
 }
