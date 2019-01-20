@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import { create, ValidatorMiddleware, wrap } from '.'
 import { isString } from './helpers'
+import { Request, Response, NextFunction } from 'express'
 
 interface Test {
   it: string
@@ -52,6 +53,42 @@ const tests: Test[] = [
       name: wrap(isString, { optional: false })
     }),
     error: true
+  },
+  {
+    it: 'pass when all props are optional on nested prop',
+    body: {},
+    validator: create({
+      sub: {
+        foo: wrap(isString, { optional: true }),
+        bar: wrap(isString, { optional: true })
+      }
+    })
+  },
+  {
+    it: 'fail when a prop is required on a nested prop with optionals',
+    body: { foo: 'prop' },
+    validator: create({
+      foo: isString,
+      sub: {
+        foo: wrap(isString, { optional: true }),
+        bar: wrap(isString, { optional: true }),
+        baz: wrap(isString, { optional: false })
+      }
+    }),
+    error: true
+  },
+  {
+    it: 'pass when a prop is required on a nested prop with optionals',
+    body: { foo: 'prop', sub: { baz: 'qux' } },
+    validator: create({
+      foo: isString,
+      sub: {
+        foo: wrap(isString, { optional: true }),
+        bar: wrap(isString, { optional: true }),
+        baz: wrap(isString, { optional: false })
+      }
+    }),
+    error: false
   }
 ]
 
@@ -68,7 +105,10 @@ describe('middleware tests', () => {
           const expected = test.error !== true
           expect(actual, 'will not raise error').to.equal(expected)
         })
-        .catch(() => {
+        .catch(err => {
+          // We will only have an error object if the expectation failed in the fulfill handler
+          if (err) throw err
+
           const actual = true
           const expected = test.error === true
           expect(actual, 'will raise error').to.equal(expected)
@@ -79,7 +119,7 @@ describe('middleware tests', () => {
   }
 })
 
-function mock(body: any) {
+function mock(body: any): [Promise<any>, Request, Response, NextFunction] {
   let resolver: Function
   let rejecter: Function
   const promise = new Promise((resolve, reject) => {
@@ -88,11 +128,11 @@ function mock(body: any) {
   })
   return [
     promise,
-    { body },
-    {},
+    { body } as any,
+    {} as any,
     (_err: any) => {
       if (_err) {
-        return rejecter(_err)
+        return rejecter()
       }
       resolver()
     }

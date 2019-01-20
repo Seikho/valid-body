@@ -16,15 +16,9 @@ export function validateObject<TBody extends {}>(
 
     // TODO: Make this optional via create() options
     const validFn = validator[key as string]
-    if (!validFn) {
-      errors.push(`Unexpected property: ${pre}${key}`)
-      continue
-    }
 
     const isValidatorNested = Object.keys(validFn as any).length > 0
-    const isValueNested =
-      value === undefined ? false : Object.keys(value).length > 0
-    if (isValidatorNested && isValueNested) {
+    if (isValidatorNested) {
       const inPre = pre ? `${key}.${pre}` : `${key}.`
       const { errors: subErrors, result: subResult } = validateObject(
         validFn as Validator,
