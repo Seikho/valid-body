@@ -7,11 +7,13 @@ export interface NumberOptions {
 }
 
 export function isNumber(value: any, opts: NumberOptions = {}) {
-  if (typeof value !== 'string') {
+  const num =
+    typeof value === 'string' ? Number(value) : typeof value === 'number' ? value : undefined
+
+  if (num === undefined) {
     return opts.optional ? OPTIONAL : undefined
   }
 
-  const num = Number(value)
   if (typeof num !== 'number') {
     return
   }
