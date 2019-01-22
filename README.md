@@ -83,6 +83,14 @@ interface CreateOptions {
 function create(validator: Validator, opts?: CreateOptions): RequestHandler
 ```
 
+### first
+
+Attempts to validate the request body against an array of validators. Returns the first success or calls `next()` with an error.
+
+```ts
+function first(validators: Validator[], opts?: CreateOptions)): RequestHandler
+```
+
 ### isString
 
 ```ts
