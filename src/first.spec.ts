@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { create, ValidatorMiddleware, wrap, first } from '.'
+import { ValidatorMiddleware, first } from '.'
 import { isString, isNumber } from './helpers'
 import { Request, Response, NextFunction } from 'express'
 
