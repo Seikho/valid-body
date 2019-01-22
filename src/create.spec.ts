@@ -141,7 +141,7 @@ const tests: Test[] = [
   }
 ]
 
-describe('middleware tests', () => {
+describe('create()', () => {
   for (const test of tests) {
     const [result, req, res, next] = mock(test.body)
     it(`will ${test.it}`, done => {

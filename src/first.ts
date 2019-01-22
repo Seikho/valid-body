@@ -2,7 +2,7 @@ import { Validator, CreateOptions, ValidatorMiddleware } from './types'
 import { getRequestProp, StatusError } from './util'
 import { validateObject } from './validate'
 
-export function first(opts: CreateOptions, ...validators: Validator[]) {
+export function first(validators: Validator[], opts: CreateOptions = {}) {
   const mw: ValidatorMiddleware = (req, _res, next) => {
     const prop = getRequestProp(opts)
     const body = req[prop]
