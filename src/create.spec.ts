@@ -7,6 +7,7 @@ interface Test {
   it: string
   body: any
   validator: ValidatorMiddleware
+  isExpected?: (body: any) => boolean
   error?: boolean
 }
 
@@ -47,7 +48,7 @@ const tests: Test[] = [
     })
   },
   {
-    it: 'fail due to optional constraint',
+    it: 'fail due to non-optional constraint',
     body: {},
     validator: create({
       name: wrap(isString, { optional: false })
@@ -89,6 +90,54 @@ const tests: Test[] = [
       }
     }),
     error: false
+  },
+  {
+    it: 'pass extra properties when not strict',
+    body: { extra: 'extra prop' },
+    validator: create({}),
+    isExpected: body => body.extra === 'extra prop',
+    error: false
+  },
+  {
+    it: 'remove extra properties when strict',
+    body: { extra: 'extra prop' },
+    validator: create({}, { strict: true }),
+    isExpected: body => body.extra === undefined,
+    error: false
+  },
+  {
+    it: 'will pass extra props when not strict on nested objects',
+    body: { foo: { baz: 'baz', extra: 'extra prop' }, bar: 'bar' },
+    validator: create(
+      {
+        bar: isString,
+        foo: {
+          baz: isString
+        }
+      },
+      { strict: false }
+    ),
+    isExpected: body =>
+      body.foo.extra === 'extra prop' &&
+      body.foo.baz === 'baz' &&
+      body.bar === 'bar'
+  },
+  {
+    it: 'will remove extra props when strict on nested objects',
+    body: { foo: { baz: 'baz', extra: 'extra prop' }, bar: 'bar' },
+    validator: create(
+      {
+        bar: isString,
+        foo: {
+          baz: isString
+        }
+      },
+      { strict: true }
+    ),
+    isExpected: body =>
+      body.foo.extra === undefined &&
+      body.foo.baz === 'baz' &&
+      body.bar === 'bar'
   }
 ]
 
@@ -97,6 +146,11 @@ describe('middleware tests', () => {
     const [result, req, res, next] = mock(test.body)
     it(`will ${test.it}`, done => {
       test.validator(req as any, res as any, next as any)
+
+      if (test.isExpected) {
+        const actual = test.isExpected(req.body)
+        expect(actual, 'body is as expected').to.equal(true)
+      }
 
       const promise = result as Promise<any>
       promise

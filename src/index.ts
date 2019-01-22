@@ -3,7 +3,8 @@ import {
   ValidatorMiddleware,
   TypeValidator,
   ValidatorOption,
-  ValueValidator
+  ValueValidator,
+  CreateOptions
 } from './types'
 import { validateObject } from './validate'
 
@@ -14,10 +15,6 @@ export class StatusError extends Error {
   constructor(public message: string, public status: number) {
     super()
   }
-}
-
-export interface CreateOptions {
-  query?: boolean
 }
 
 export function wrap<TValidator extends TypeValidator>(
@@ -41,11 +38,11 @@ export function create(
       return next(new StatusError('No body received', 400))
     }
 
-    const { errors, result } = validateObject(validator, body)
+    const { errors, result } = validateObject(validator, body, opts)
     if (errors.length) {
       const message = errors.join('\n')
       return next(
-        new StatusError(`Bad request: Invalid request body\n${message}`, 400)
+        new StatusError(`Bad request: Invalid request ${prop}\n${message}`, 400)
       )
     }
 

@@ -1,9 +1,10 @@
-import { Validator, ValueValidator } from './types'
+import { Validator, ValueValidator, CreateOptions } from './types'
 import { OPTIONAL } from './helpers'
 
 export function validateObject<TBody extends {}>(
   validator: Validator,
   input: TBody,
+  opts: CreateOptions,
   pre = ''
 ): { errors: string[]; result: unknown } {
   const keys = Object.keys(validator) as Array<keyof typeof input>
@@ -23,6 +24,7 @@ export function validateObject<TBody extends {}>(
       const { errors: subErrors, result: subResult } = validateObject(
         validFn as Validator,
         value,
+        opts,
         inPre
       )
       errors.push(...subErrors)
@@ -37,6 +39,17 @@ export function validateObject<TBody extends {}>(
         errors.push(`'${pre}${key}' is not valid`)
         continue
       }
+    }
+  }
+
+  if (!opts.strict) {
+    const bodyKeys = Object.keys(body)
+    for (const key of bodyKeys) {
+      if (key in validator) {
+        continue
+      }
+
+      result[key] = (body as any)[key]
     }
   }
 

@@ -35,3 +35,8 @@ export type ValidatorOption<
   : T extends typeof h.isEmail
   ? h.EmailOptions
   : h.TimestampOptions
+
+export interface CreateOptions {
+  strict?: boolean
+  query?: boolean
+}

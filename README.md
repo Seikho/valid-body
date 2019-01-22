@@ -64,9 +64,11 @@ router.post('/create', create.validator, create.handler)
 
 ### create
 
-The middleware will use `request.body` by default.
+_CreateOptions_
 
-This can be overriden by passing in `{ query: true }` as options to the create function.
+`query?: boolean` The middleware will use `request.body` by default. Setting `query` to `true` will use `req.query` instead.
+
+`strict?: boolean`: If true, properties not defined in the validator will be removed from the validated object.
 
 ```ts
 type ValueValidator<TValue = unknown> = (value: TValue) => undefined
@@ -75,6 +77,7 @@ type Validator = { [key: string]: ValueValidator | Validator }
 
 interface CreateOptions {
   query?: boolean
+  strict?: boolean
 }
 
 function create(validator: Validator, opts?: CreateOptions): RequestHandler
