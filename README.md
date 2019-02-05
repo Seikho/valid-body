@@ -151,7 +151,7 @@ interface ArrayOptions<T = any> {
   optional?: boolean
 
   /** Ensure that every element in the array is a specific type */
-  validator?: ValueValidator<T>
+  validator?: Validator | ValueValidator<T>
 }
 
 function isArray(value: any, opts: ArrayOptions = {}): Array | undefined
