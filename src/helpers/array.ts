@@ -1,11 +1,12 @@
-import { ValueValidator } from '../types'
+import { Validator } from '../types'
 import { OPTIONAL } from './util'
+import { validateObject } from '../validate'
 
-export interface ArrayOptions<T = any> {
+export interface ArrayOptions {
   optional?: boolean
 
   /** Ensure that every element in the array is a specific type */
-  validator?: ValueValidator<T>
+  validator?: Validator
 }
 
 export function isArray(value: any, opts: ArrayOptions = {}) {
@@ -18,13 +19,16 @@ export function isArray(value: any, opts: ArrayOptions = {}) {
   }
 
   if (opts.validator) {
-    const isAllValid = value.map(opts.validator).every(entryExists)
-    return isAllValid ? value : undefined
+    const parsed: any[] = []
+    for (const entry of value) {
+      const { errors, result } = validateObject(opts.validator, entry, {})
+      if (errors.length > 0) {
+        return undefined
+      }
+      parsed.push(result)
+    }
+    return parsed
   }
 
   return value
-}
-
-function entryExists(value: any) {
-  return value !== undefined
 }
