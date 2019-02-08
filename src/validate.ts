@@ -1,4 +1,4 @@
-import { Validator, ValueValidator, CreateOptions } from './types'
+import { Validator, ValueValidator, CreateOptions, ValidatorMap } from './types'
 import { OPTIONAL } from './helpers'
 
 export function validateObject<TBody extends {}>(
@@ -7,16 +7,26 @@ export function validateObject<TBody extends {}>(
   opts: CreateOptions,
   pre = ''
 ): { errors: string[]; result: unknown } {
-  const keys = Object.keys(validator) as Array<keyof typeof input>
   const errors: string[] = []
-  const result: any = {}
   const body = (input || {}) as TBody
 
+  if (isValidatorFunc(validator)) {
+    const result = validator(body)
+    console.log('here', result, body, validator.name)
+    if (result === undefined) {
+      errors.push(`Request body is not valid`)
+    }
+    return { errors, result }
+  }
+
+  const validMap = validator as ValidatorMap
+  const keys = Object.keys(validator) as Array<keyof typeof input>
+  const result: any = {}
   for (const key of keys) {
     const value = body[key]
 
     // TODO: Make this optional via create() options
-    const validFn = validator[key as string]
+    const validFn = validMap[key as string]
 
     const isValidatorNested = Object.keys(validFn as any).length > 0
     if (isValidatorNested) {

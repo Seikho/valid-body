@@ -6,13 +6,10 @@ export type ValueValidator<TValue = unknown> = (
   opts?: {}
 ) => TValue | Symbol | undefined
 
-export type ValidatorMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => void
+export type ValidatorMiddleware = (req: Request, res: Response, next: NextFunction) => void
 
-export type Validator = { [key: string]: ValueValidator | Validator }
+export type ValidatorMap = { [key: string]: ValueValidator | Validator }
+export type Validator = ValidatorMap | ValueValidator
 
 export type TypeValidator =
   | typeof h.isString
@@ -22,9 +19,7 @@ export type TypeValidator =
   | typeof h.isEmail
   | typeof h.isTimestamp
 
-export type ValidatorOption<
-  T extends TypeValidator
-> = T extends typeof h.isString
+export type ValidatorOption<T extends TypeValidator> = T extends typeof h.isString
   ? h.StringOptions
   : T extends typeof h.isNumber
   ? h.NumberOptions

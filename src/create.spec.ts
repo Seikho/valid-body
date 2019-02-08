@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { create, ValidatorMiddleware, wrap } from '.'
-import { isString } from './helpers'
+import { isString, isArray, isNumber } from './helpers'
 import { Request, Response, NextFunction } from 'express'
 
 interface Test {
@@ -118,9 +118,7 @@ const tests: Test[] = [
       { strict: false }
     ),
     isExpected: body =>
-      body.foo.extra === 'extra prop' &&
-      body.foo.baz === 'baz' &&
-      body.bar === 'bar'
+      body.foo.extra === 'extra prop' && body.foo.baz === 'baz' && body.bar === 'bar'
   },
   {
     it: 'will remove extra props when strict on nested objects',
@@ -134,10 +132,31 @@ const tests: Test[] = [
       },
       { strict: true }
     ),
-    isExpected: body =>
-      body.foo.extra === undefined &&
-      body.foo.baz === 'baz' &&
-      body.bar === 'bar'
+    isExpected: body => body.foo.extra === undefined && body.foo.baz === 'baz' && body.bar === 'bar'
+  },
+  {
+    it: 'will validate an array with primitives',
+    body: { foo: [42, 84] },
+    validator: create({ foo: wrap(isArray, { validator: isNumber }) }),
+    isExpected: body => body.foo.every((val: any) => val > 0)
+  },
+  {
+    it: 'will allow primitive reqest body',
+    body: 42,
+    validator: create(isNumber),
+    isExpected: body => body === 42
+  },
+  {
+    it: 'will allow array as reqest body',
+    body: [42, 84],
+    validator: create(wrap(isArray, { validator: isNumber })),
+    isExpected: body => body[0] === 42 && body[1] === 84
+  },
+  {
+    it: 'will disallow invalid array as reqest body',
+    body: [42, 'foo'],
+    validator: create(wrap(isArray, { validator: isNumber })),
+    error: true
   }
 ]
 
