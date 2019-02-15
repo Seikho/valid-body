@@ -4,6 +4,7 @@ export * from './types'
 export * from './helpers'
 export * from './create'
 export * from './first'
+export { validateObject } from './validate'
 export { StatusError } from './util'
 
 export function wrap<TValidator extends TypeValidator>(
