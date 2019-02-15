@@ -12,7 +12,6 @@ export function validateObject<TBody extends {}>(
 
   if (isValidatorFunc(validator)) {
     const result = validator(body)
-    console.log('here', result, body, validator.name)
     if (result === undefined) {
       errors.push(`Request body is not valid`)
     }
