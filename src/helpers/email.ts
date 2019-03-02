@@ -13,7 +13,7 @@ export function isEmail(value: any, opts: EmailOptions = {}) {
     return
   }
 
-  const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const isEmail = value.match(emailRegex) !== null
   return isEmail ? value : undefined
 }
