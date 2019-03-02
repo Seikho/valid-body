@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf output/",
-    "test": "mocha 'output/**/*.spec.js'"
+    "test": "mocha 'output/**/*.spec.js'",
+    "test:win": "mocha output/**/*.spec.js"
   },
   "repository": {
     "type": "git",
