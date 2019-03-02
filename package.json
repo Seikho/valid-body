@@ -7,7 +7,7 @@
     "build": "tsc",
     "clean": "rimraf output/",
     "test": "mocha 'output/**/*.spec.js'",
-    "test:win": "mocha output/**/*.spec.js"
+    "test:win": "mocha output/**/*.spec.js --colors"
   },
   "repository": {
     "type": "git",
