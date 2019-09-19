@@ -1,5 +1,5 @@
 {
-  "name": "valid-body",
+  "name": "valid-body-new",
   "version": "0.5.1",
   "description": "Express middleware generator for validating requests",
   "main": "output/index.js",
